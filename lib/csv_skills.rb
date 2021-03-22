@@ -10,10 +10,11 @@ class CsvSkills
   ERRORFILE = 'error.csv'
   HEADER = %w[domain count].freeze
 
-  def self.parse_file(input_file, _output_file)
+  def self.parse_file(input_file, output_file)
     data = CsvParse.read_file(input_file)
     domains = data.map { |row| find_domains(row) }
     totals = count(domains)
+    write_result(totals, output_file)
   rescue Errno::ENOENT => e
     CsvParse.write_file(ERRORFILE, { 'Error' => e.message }, 'Error')
   rescue StandardError => e
