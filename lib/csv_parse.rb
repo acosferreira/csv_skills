@@ -3,11 +3,11 @@
 require 'csv'
 
 class CsvParse
-  def read_file(file)
+  def self.read_file(file)
     CSV.read(file)
   end
 
-  def write_file(result, outputfile, header)
+  def self.write_file(result, outputfile, header)
     CSV.open(outputfile, 'wb') do |csv|
       csv << header
       result.to_a.each do |elem|

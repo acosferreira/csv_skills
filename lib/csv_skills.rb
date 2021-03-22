@@ -6,34 +6,31 @@ require 'csv_parse'
 
 Bundler.require(:default)
 
-# class CsvSkills
-  
+class CsvSkills
   ERRORFILE = 'error.csv'
-  HEADER = %w[domain count]
-  
-  def parse_file(inputfile, outputfile)
-    csv = CsvParse.new
-    data = csv.read_file(inputfile)
-    domains = find_domains(data)
-    totals = count_domains(domains)
-    csv.write_file(totals, outputfile, HEADER)
+  HEADER = %w[domain count].freeze
+
+  def self.parse_file(input_file, output_file)
+    data = CsvParse.read_file(input_file)
+    domains = data.map { |row| find_domains(row) }
+    totals = count(domains)
+    
   rescue Errno::ENOENT => e
-    csv.write_file(ERRORFILE, { 'Error' => e.message })
+    CsvParse.write_file(ERRORFILE, { 'Error' => e.message }, 'Error')
   rescue StandardError => e
-    csv.write_file(ERRORFILE, { 'Error' => e.message })
+    CsvParse.write_file(ERRORFILE, { 'Error' => e.message }, 'Error')
   end
 
-  def find_domains(row_value)
-    domains = []
-    row_value.each do |line|
-      line.each do |elem|
-        domains << elem.split('@').last if elem.include?('@')
-      end
-    end
-    domains
+  def self.find_domains(row)
+    email = row.find { |elem| elem.include?('@') }
+    email.split('@').last if email
   end
 
-  def count_domains(domains)
-    domains.group_by{|domain| domain}.map {|key,value| [key, value.length]}
+  def self.count(values)
+    values.group_by { |value| value }.map { |key, value| [key, value.length] }
   end
- # end
+
+  def self.write_result(totals, output_file)
+    CsvParse.write_file(totals, output_file, HEADER)
+  end
+end
