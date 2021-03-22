@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'csv'
 
 class CsvParse
@@ -5,10 +7,10 @@ class CsvParse
     CSV.read(file)
   end
 
-  def write_file(domain_counts, file_name)
-    CSV.open(file_name, 'wb') do |csv|
-      csv << %w[domain count]
-      domain_counts.to_a.each do |elem|
+  def write_file(result, outputfile, header)
+    CSV.open(outputfile, 'wb') do |csv|
+      csv << header
+      result.to_a.each do |elem|
         csv << elem
       end
     end
