@@ -12,13 +12,13 @@ class GenerateCSV
   end
 
   def generate
-    CSV.open(path, "wb") do |csv|
+    CSV.open(path, 'wb') do |csv|
       count.times do
         csv << [
-          [Faker::Name.first_name, Faker::Name.last_name].join(" "),
+          [Faker::Name.first_name, Faker::Name.last_name].join(' '),
           Faker::Internet.free_email,
           rand(99),
-          %W(m f)[rand(1)]
+          %w[m f][rand(1)]
         ]
       end
     end
